@@ -23,7 +23,7 @@ if (isset($_GET['msg'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/img/logo.png" type="image/x-icon">
-    <title>Settings - Sawongam Bank </title>
+    <title>Settings - Finova Bank </title>
     <link href="./css/index/mainMobile.css" rel="stylesheet">
     <link href="./css/index/table.css" media="(min-width: 600px)" rel="stylesheet">
     <link href="./css/index/desktop.css" media="(min-width: 900px)" rel="stylesheet">
@@ -33,6 +33,122 @@ if (isset($_GET['msg'])) {
     <link href="./css/table/desktop.css" media="(min-width: 900px)" rel="stylesheet">
     <link rel="stylesheet" href="./css/all.min.css" />
     <link rel="stylesheet" href="./css/common.css" />
+
+<style>
+    /* PROFILE DROPDOWN */
+
+.profile-dropdown{
+position:relative;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.profile-img{
+width:40px;
+height:40px;
+border-radius:50%;
+cursor:pointer;
+background-size:cover;
+background-position:center;
+border:2px solid #fff;
+}
+
+.profile-menu{
+display:none;
+position:absolute;
+top:60px;
+right:0;
+width:240px;
+background:white;
+border-radius:12px;
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
+padding:10px 0;
+z-index:1000;
+}
+
+.profile-menu a{
+display:block;
+padding:12px 20px;
+text-decoration:none;
+color:#333;
+font-size:14px;
+}
+
+.profile-menu a:hover{
+background:#f5f5f5;
+}
+
+.profile-header{
+text-align:center;
+padding:15px;
+}
+
+.profile-pic{
+width:60px;
+height:60px;
+border-radius:50%;
+margin:auto;
+background-size:cover;
+background-position:center;
+margin-bottom:10px;
+}
+
+.logout-btn{
+color:red;
+font-weight:600;
+}
+.settings-container{
+margin-top:20px;
+}
+
+.settings-title{
+font-size:22px;
+margin-bottom:20px;
+font-weight:600;
+}
+
+.settings-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.settings-card{
+background:#fff;
+padding:25px;
+border-radius:12px;
+text-align:center;
+text-decoration:none;
+color:#333;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.settings-card i{
+font-size:28px;
+margin-bottom:10px;
+color:#4e73df;
+}
+
+.settings-card:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.settings-card.danger i{
+color:red;
+}
+.dark-mode{
+background:#1e1e2f;
+color:white;
+}
+
+.dark-mode .settings-card{
+background:#2a2a3c;
+color:white;
+}
+</style>
 </head>
 
 <body>
@@ -44,7 +160,7 @@ if (isset($_GET['msg'])) {
                     <div class="sidebar-brand-icon rotate-n-15">
                         <img src="../../assets/img/logo.png" height="50px">
                     </div>
-                    <div class="sidebar-brand-text"><span>Sawongam Bank</span></div>
+                    <div class="sidebar-brand-text"><span>Finova Bank</span></div>
                 </a>
                 <hr class="sidebar-divider">
                 <ul class="navbar-nav" id="sidebar-ul">
@@ -96,29 +212,88 @@ if (isset($_GET['msg'])) {
             </div>
         </nav>
 
-        <div id="content-wrapper">
-            <!--!Navbar Top-->
-            <div class="navbar-top d-flex" id="page-top">
-                <div class="container-fluid d-flex"></div>
-                <ul class="navbar-nav-ul d-flex">
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link search-icon-nav" href="#"><i class="fas fa-search"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-bell fa-fw"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-envelope fa-fw"></i></a>
-                    </li>
-                    <div class="topbar-divider"></div>
-                    <li class="nav-item avatar-n">
-                        <p><span class="avatar-text">
-                                <?php echo $name ?>
-                            </span></p>
-                        <div class="avatar-nav" style="background-image: url(<?php echo $pp ?>);"></div>
-                    </li>
-                </ul>
-            </div>
+<div id="content-wrapper">
+
+<!-- Navbar Top -->
+<div class="navbar-top d-flex" id="page-top">
+
+<div class="container-fluid d-flex"></div>
+
+<ul class="navbar-nav-ul d-flex">
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link search-icon-nav" href="#">
+<i class="fas fa-search"></i>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link" href="#">
+<i class="fas fa-bell fa-fw"></i>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link" href="#">
+<i class="fas fa-envelope fa-fw"></i>
+</a>
+</li>
+
+<div class="topbar-divider"></div>
+
+<!-- PROFILE DROPDOWN -->
+
+<li class="nav-item avatar-n profile-dropdown">
+
+<p>
+<span class="avatar-text">
+<?php echo $name ?>
+</span>
+</p>
+
+<div class="avatar-nav profile-img"
+onclick="toggleProfileMenu()"
+style="background-image: url(<?php echo $pp ?>);">
+</div>
+
+<!-- Dropdown Menu -->
+
+<div id="profileMenu" class="profile-menu">
+
+<div class="profile-header">
+
+<div class="profile-pic"
+style="background-image: url(<?php echo $pp ?>);">
+</div>
+
+<h4><?php echo $name ?></h4>
+<p>Finova Bank Customer</p>
+
+</div>
+
+<hr>
+
+<a href="profile.php">
+<i class="fas fa-user"></i> My Profile
+</a>
+
+<a href="settings.php">
+<i class="fas fa-cog"></i> Settings
+</a>
+
+<hr>
+
+<a class="logout-btn" href="logout.php">
+<i class="fas fa-sign-out-alt"></i> Logout
+</a>
+
+</div>
+
+</li>
+
+</ul>
+
+</div>
 
             <!--!Index's Main contents start here-->
             <div class="index-content container-main">
@@ -188,11 +363,106 @@ if (isset($_GET['msg'])) {
                                 </form>
                             </div>
                         </div>
+                        <!-- Settings Section -->
+
+<div class="overview-row row d-flex" style="margin-top:30px;">
+
+<div class="revenue profileInfo">
+<div class="revenue-container row2-bgEdit">
+
+<div class="user-setting-head project-head">
+<h6>Security & Settings</h6>
+</div>
+
+<div class="settings-grid">
+
+<a href="change_password.php" class="settings-card">
+<i class="fas fa-lock"></i>
+<p>Change Password</p>
+</a>
+
+<a href="change_upi_pin.php" class="settings-card">
+<i class="fas fa-key"></i>
+<p>Change UPI PIN</p>
+</a>
+
+<a href="update_mobile.php" class="settings-card">
+<i class="fas fa-phone"></i>
+<p>Update Mobile Number</p>
+</a>
+
+<a href="debit_card.php" class="settings-card">
+<i class="fas fa-credit-card"></i>
+<p>Manage Debit Card</p>
+</a>
+
+<a href="#" onclick="toggleDarkMode()" class="settings-card">
+<i class="fas fa-moon"></i>
+<p>Dark Mode</p>
+</a>
+
+<a href="delete_account.php" class="settings-card danger">
+<i class="fas fa-trash"></i>
+<p>Delete Account</p>
+</a>
+
+</div>
+
+</div>
+</div>
+
+</div>
                     </div>
                 </div>
             </div>
         </div>
         <script src="../../assets/js/file_handle.js"></script>
-</body>
+<script>
 
+function toggleDarkMode(){
+
+document.body.classList.toggle("dark-mode");
+
+localStorage.setItem(
+"darkMode",
+document.body.classList.contains("dark-mode")
+);
+
+}
+
+if(localStorage.getItem("darkMode") === "true"){
+document.body.classList.add("dark-mode");
+}
+
+</script>
+    </body>
+<script>
+
+function toggleProfileMenu() {
+
+var menu = document.getElementById("profileMenu");
+
+if(menu.style.display === "block"){
+menu.style.display = "none";
+}else{
+menu.style.display = "block";
+}
+
+}
+
+window.onclick = function(event) {
+
+if(!event.target.closest('.profile-dropdown')){
+
+var menu = document.getElementById("profileMenu");
+
+if(menu){
+menu.style.display = "none";
+}
+
+}
+
+}
+
+</script>
 </html>
