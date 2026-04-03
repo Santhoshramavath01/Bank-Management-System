@@ -7,7 +7,9 @@
 ![SQL](https://img.shields.io/badge/SQL-lightgrey.svg)
 ![Status](https://img.shields.io/badge/Status-Complete-red.svg)
 
-A Web-based banking system, providing account login, creation, balance inquiry, fund transfers, analytics, and more.
+A Web-based banking  system, providing account login, creation, balance inquiry, fund transfers, analytics, and more.
+
+// updated
 
 ## Features
 
