@@ -18,3 +18,13 @@
 .zoom-on-hover:hover {
     transform: scale(1.05);
 }
+.navbar-brand-text{
+font-size:18px;
+font-weight:600;
+margin-left:10px;
+}
+
+.bank-logo{
+width:35px;
+height:35px;
+}

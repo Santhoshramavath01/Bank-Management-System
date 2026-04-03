@@ -562,3 +562,78 @@ footer {
     flex: 1 2 auto;
   }
 }
+
+/* Dashboard Hover Cards */
+
+.income-card,
+.dashboard-card{
+border-radius:18px;
+transition:all 0.3s ease;
+cursor:pointer;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+background:white;
+}
+
+.income-card:hover,
+.dashboard-card:hover{
+transform:translateY(-6px);
+box-shadow:0 12px 25px rgba(0,0,0,0.2);
+}
+
+/* Card Layout */
+
+.card-body{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.card-price{
+font-size:24px;
+font-weight:bold;
+}
+
+/* Title Colors */
+
+.income-title{
+color:rgb(28,200,138);
+font-weight:600;
+}
+
+.expense-title{
+color:red;
+font-weight:600;
+}
+
+.turnover-title{
+color:rgb(78,115,223);
+font-weight:600;
+}
+
+.ratio-title{
+color:rgb(54,185,204);
+font-weight:600;
+}
+
+/* Icon Style */
+
+.card-icon{
+color:#d1d3e2;
+}
+
+/* Ratio Progress Bar */
+
+.progress3{
+width:120px;
+height:8px;
+background:#e9ecef;
+border-radius:10px;
+overflow:hidden;
+margin-left:10px;
+}
+
+.progress-bar3{
+height:100%;
+background:#36b9cc;
+border-radius:10px;
+}

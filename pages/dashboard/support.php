@@ -22,7 +22,7 @@ if (isset($_GET['msg'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/img/logo.png" type="image/x-icon">
-    <title>Support - Sawongam Bank </title>
+    <title>Support - Finova Bank </title>
     <link href="./css/index/mainMobile.css" rel="stylesheet">
     <link href="./css/index/table.css" media="(min-width: 600px)" rel="stylesheet">
     <link href="./css/index/desktop.css" media="(min-width: 900px)" rel="stylesheet">
@@ -32,92 +32,156 @@ if (isset($_GET['msg'])) {
     <link href="./css/table/desktop.css" media="(min-width: 900px)" rel="stylesheet">
     <link rel="stylesheet" href="./css/all.min.css" />
     <link rel="stylesheet" href="./css/common.css" />
+<style>
+    /* PROFILE DROPDOWN */
+
+.profile-dropdown{
+position:relative;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.profile-img{
+width:40px;
+height:40px;
+border-radius:50%;
+cursor:pointer;
+background-size:cover;
+background-position:center;
+border:2px solid #fff;
+}
+
+.profile-menu{
+display:none;
+position:absolute;
+top:60px;
+right:0;
+width:240px;
+background:white;
+border-radius:12px;
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
+padding:10px 0;
+z-index:1000;
+}
+
+.profile-menu a{
+display:block;
+padding:12px 20px;
+text-decoration:none;
+color:#333;
+font-size:14px;
+}
+
+.profile-menu a:hover{
+background:#f5f5f5;
+}
+
+.profile-header{
+text-align:center;
+padding:15px;
+}
+
+.profile-pic{
+width:60px;
+height:60px;
+border-radius:50%;
+margin:auto;
+background-size:cover;
+background-position:center;
+margin-bottom:10px;
+}
+
+.logout-btn{
+color:red;
+font-weight:600;
+}
+</style>
 </head>
 
 <body>
-    <div id="wrapper">
-        <!-- Navbar Side-->
-        <nav class="navbar-side sidebar">
-            <div class="nav-container">
-                <a class="navbar-brand" href="./index.php">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <img src="../../assets/img/logo.png" height="50px">
-                    </div>
-                    <div class="sidebar-brand-text"><span>Sawongam Bank</span></div>
-                </a>
-                <hr class="sidebar-divider">
-                <ul class="navbar-nav" id="sidebar-ul">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./transfer.php">
-                            <i class="fas fa-money-bill-alt"></i>
-                            <span>Transfer</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="transactions.php">
-                            <i class="fas fa-exchange-alt"></i>
-                            <span>Transactions</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="analytics.php">
-                            <i class="fas fa-industry"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="profile.php">
-                            <i class="fas fa-user"></i><span>Profile</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="settings.php">
-                            <i class="fas fa-adjust"></i><span>Settings</span>
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="support.php">
-                            <i class="fas fa-envelope"></i><span class="active-db">Support</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../scripts/logout.php">
-                            <i class="fas fa-sign-out-alt"></i><span>Log out</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+   
+      <div id="content-wrapper">
 
-        <div id="content-wrapper">
-            <!--!Navbar Top-->
-            <div class="navbar-top d-flex" id="page-top">
-                <div class="container-fluid d-flex"></div>
-                <ul class="navbar-nav-ul d-flex">
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link search-icon-nav" href="#"><i class="fas fa-search"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-bell fa-fw"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="dropdown-toggle nav-link" href="#"><i class="fas fa-envelope fa-fw"></i></a>
-                    </li>
-                    <div class="topbar-divider"></div>
-                    <li class="nav-item avatar-n">
-                        <p><span class="avatar-text">
-                                <?php echo $name ?>
-                            </span></p>
-                        <div class="avatar-nav" style="background-image: url(<?php echo $pp ?>);"></div>
-                    </li>
-                </ul>
-            </div>
+<!-- Navbar Top -->
+<div class="navbar-top d-flex" id="page-top">
+
+<div class="container-fluid d-flex"></div>
+
+<ul class="navbar-nav-ul d-flex">
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link search-icon-nav" href="#">
+<i class="fas fa-search"></i>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link" href="#">
+<i class="fas fa-bell fa-fw"></i>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="dropdown-toggle nav-link" href="#">
+<i class="fas fa-envelope fa-fw"></i>
+</a>
+</li>
+
+<div class="topbar-divider"></div>
+
+<!-- PROFILE DROPDOWN -->
+
+<li class="nav-item avatar-n profile-dropdown">
+
+<p>
+<span class="avatar-text">
+<?php echo $name ?>
+</span>
+</p>
+
+<div class="avatar-nav profile-img"
+onclick="toggleProfileMenu()"
+style="background-image: url(<?php echo $pp ?>);">
+</div>
+
+<!-- Dropdown Menu -->
+
+<div id="profileMenu" class="profile-menu">
+
+<div class="profile-header">
+
+<div class="profile-pic"
+style="background-image: url(<?php echo $pp ?>);">
+</div>
+
+<h4><?php echo $name ?></h4>
+<p>Finova Bank Customer</p>
+
+</div>
+
+<hr>
+
+<a href="profile.php">
+<i class="fas fa-user"></i> My Profile
+</a>
+
+<a href="settings.php">
+<i class="fas fa-cog"></i> Settings
+</a>
+
+<hr>
+
+<a class="logout-btn" href="#" onclick="logoutUser()">
+<i class="fas fa-sign-out-alt"></i> Logout
+</a>
+</div>
+
+</li>
+
+</ul>
+
+</div>
 
             <!--!Index's Main contents start here-->
             <div class="index-content container-main">
@@ -188,5 +252,41 @@ if (isset($_GET['msg'])) {
             </div>
         </div>
 </body>
+<script>
 
+function toggleProfileMenu() {
+
+var menu = document.getElementById("profileMenu");
+
+if(menu.style.display === "block"){
+menu.style.display = "none";
+}else{
+menu.style.display = "block";
+}
+
+}
+
+window.onclick = function(event) {
+
+if(!event.target.closest('.profile-dropdown')){
+
+var menu = document.getElementById("profileMenu");
+
+if(menu){
+menu.style.display = "none";
+}
+
+}
+
+}
+function logoutUser(){
+
+    if(confirm("Are you sure you want to logout?")){
+
+        window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
+
+    }
+
+}
+</script>
 </html>

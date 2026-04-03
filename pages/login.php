@@ -39,11 +39,7 @@ if (isset($_GET['msg'])) {
             <!-- Login Form Section -->
             <div class="col-lg-6 d-flex align-items-center justify-content-center" style="height: 100vh;">
                 <div class="col-7">
-                    <div class="text-center mb-5 d-block d-lg-none">
-                        <a href="home.php"><img src="../assets/img/logo.png" height="80px"
-                            class="zoom-on-hover" alt="logo"></a>
-                    </div>
-                    <div class="col-md-12 fw-bold mb-5 text-center login-header">Welcome to Sawongam Bank!</div>
+                    <div class="col-md-12 fw-bold mb-5 text-center login-header">Welcome to Finova Bank!</div>
                     <form action="../scripts/login_auth.php" method="POST">
                         <div class="mb-2">
                             <label for="accountNumber" class="form-label text-black login-label">Account Number</label>
@@ -65,36 +61,14 @@ if (isset($_GET['msg'])) {
                     </form>
                     <p class="mt-4 login-label text-center">Don't have an account? <a href="register.php"
                             class="no-underline">Register</a></p>
-                    <!-- Social Icons -->
-                    <div class="container mt-4">
-                        <div class="row justify-content-center">
-                            <div class="col-auto">
-                                <a href="https://facebook.com/sawongam">
-                                    <img src="../assets/img/fb-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="facebook">
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#">
-                                    <img src="../assets/img/whats-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="whatsapp">
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#">
-                                    <img src="../assets/img/tel-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="telegram">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
 
             <!-- Hidden Logo Section -->
             <div class="col-lg-6 align-items-center justify-content-center pb-5 d-none d-lg-flex"
                 style="height: 100vh; background-position: right;">
-                <a href="../index.php"><img src="../assets/img/logo.png" class="zoom-on-hover" alt="Sawongam Logo"></a>
+                
                 <!-- Login Side Block -->
                 <div class="login-block"></div>
             </div>

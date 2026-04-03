@@ -11,7 +11,7 @@ if (isset($_GET['msg'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Sawongam Bank</title>
+    <title>Register - Finova Bank</title>
     <link rel="icon" href="../assets/img/logo.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,6 +51,17 @@ if (isset($_GET['msg'])) {
                             <input type="email" class="form-control rounded-4 textfield" id="email" name="email">
                             <small id="error-email" class="form-text text-danger error-font"></small>
                         </div>
+                        <div class="mb-1">
+<label for="mobile" class="form-label text-black login-label">Mobile Number</label>
+<input type="text" class="form-control rounded-4 textfield"
+id="mobile"
+name="mobile"
+maxlength="10"
+pattern="[0-9]{10}"
+placeholder="Enter 10 digit mobile number"
+required>
+<small id="error-mobile" class="form-text text-danger error-font"></small>
+</div>
                         <div class="mb-2 password-field">
                             <label for="password" class="form-label text-black login-label">Password</label>
                             <input type="password" class="form-control rounded-4 textfield" id="password"
@@ -76,29 +87,6 @@ if (isset($_GET['msg'])) {
                     <p class="mt-4 login-label text-center">Already have an account? <a href="login.php"
                             class="no-underline">Login</a>
                     </p>
-                    <!-- Social Icons -->
-                    <div class="container mt-3">
-                        <div class="row justify-content-center">
-                            <div class="col-auto">
-                                <a href="https://facebook.com/sawongam">
-                                    <img src="../assets/img/fb-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="facebook">
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#">
-                                    <img src="../assets/img/whats-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="whatsapp">
-                                </a>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#">
-                                    <img src="../assets/img/tel-icon.png" height="24px" class="zoom-on-hover"
-                                        alt="telegram">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

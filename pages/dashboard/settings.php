@@ -152,66 +152,7 @@ color:white;
 </head>
 
 <body>
-    <div id="wrapper">
-        <!-- Navbar Side-->
-        <nav class="navbar-side sidebar">
-            <div class="nav-container">
-                <a class="navbar-brand" href="./index.php">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <img src="../../assets/img/logo.png" height="50px">
-                    </div>
-                    <div class="sidebar-brand-text"><span>Finova Bank</span></div>
-                </a>
-                <hr class="sidebar-divider">
-                <ul class="navbar-nav" id="sidebar-ul">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./transfer.php">
-                            <i class="fas fa-money-bill-alt"></i>
-                            <span>Transfer</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="transactions.php">
-                            <i class="fas fa-exchange-alt"></i>
-                            <span>Transactions</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="analytics.php">
-                            <i class="fas fa-industry"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.php">
-                            <i class="fas fa-user"></i><span>Profile</span>
-                        </a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="settings.php">
-                            <i class="fas fa-adjust"></i><span class="active-db">Settings</span>
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" href="support.php">
-                            <i class="fas fa-envelope"></i><span>Support</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../scripts/logout.php">
-                            <i class="fas fa-sign-out-alt"></i><span>Log out</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+    
 <div id="content-wrapper">
 
 <!-- Navbar Top -->
@@ -283,7 +224,7 @@ style="background-image: url(<?php echo $pp ?>);">
 
 <hr>
 
-<a class="logout-btn" href="logout.php">
+<a class="logout-btn" href="#" onclick="logoutUser()">
 <i class="fas fa-sign-out-alt"></i> Logout
 </a>
 
@@ -401,10 +342,6 @@ style="background-image: url(<?php echo $pp ?>);">
 <p>Dark Mode</p>
 </a>
 
-<a href="delete_account.php" class="settings-card danger">
-<i class="fas fa-trash"></i>
-<p>Delete Account</p>
-</a>
 
 </div>
 
@@ -463,6 +400,14 @@ menu.style.display = "none";
 }
 
 }
+function logoutUser(){
 
+    if(confirm("Are you sure you want to logout?")){
+
+        window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
+
+    }
+
+}
 </script>
 </html>

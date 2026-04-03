@@ -1,27 +1,29 @@
 <?php
 session_start();
-require('../configs/db.php');
 
-if (!isset($_POST['change'])) {
-    header('Location: ../pages/dashboard/settings.php?msg=Please send a query');
+if (!isset($_SESSION['AccNo'])) {
+    header('Location: ../pages/login.php');
     exit;
 }
+
+require('../configs/db.php');
+
+$accNo = $_SESSION['AccNo'];
 
 $name = $_POST['name'];
 $email = $_POST['email'];
 $address = $_POST['address'];
 
-if (empty($name) || empty($email) || empty($address)) {
-    header('Location: ../pages/dashboard/settings.php?msg=Please fill all the fields');
-    exit;
+$sql = "UPDATE userinfo 
+        SET Name='$name', Email='$email', Address='$address'
+        WHERE AccNo='$accNo'";
+
+$result = mysqli_query($conn,$sql);
+
+if($result){
+header("Location: ../pages/dashboard/profile.php?msg=Profile Updated");
+}else{
+header("Location: ../pages/dashboard/settings.php?msg=Update Failed");
 }
 
-$sql = "UPDATE userinfo SET Name='$name', Email='$email', Address='$address' WHERE AccNo =" . $_SESSION['AccNo'];
-$update_sql = mysqli_query($conn, $sql);
-if (!$update_sql) {
-    header('Location: ../pages/dashboard/settings.php?msg=Account info change failed');
-    exit;
-}
-
-header('Location: ../pages/dashboard/settings.php?msg=Account info changed successfully');
-exit;
+?>

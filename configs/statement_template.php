@@ -1,144 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Statement</title>
-    <style>
-        html {
-            margin: 0;
-            padding: 0;
-        }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #4e73df;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+<style>
 
-        .container {
-            max-width: 675px;
-            width: 100%;
-            background-color: #ebefff;
-            padding: 40px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
+body{
+font-family:Arial;
+background:#f5f6ff;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.container{
+width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+}
 
-        .header h2 {
-            font-size: 30px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
+.header{
+text-align:center;
+margin-bottom:20px;
+}
 
-        .header p {
-            margin: 0px !important;
-        }
+.logo{
+width:80px;
+}
 
-        .logo {
-            max-width: 100px;
-            margin-bottom: 15px;
-        }
+h2{
+color:#4e73df;
+margin:5px;
+}
 
-        h3 {
-            color: #4e73df;
-        }
+.statement{
+width:100%;
+border-collapse:collapse;
+}
 
-        .statement {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0px;
-        }
+.statement th{
+background:#4e73df;
+color:white;
+padding:10px;
+}
 
-        .statement th,
-        .statement td {
-            border: 1px solid #ddd;
-            padding: 15px;
-            text-align: left;
-        }
+.statement td{
+padding:10px;
+border:1px solid #ddd;
+}
 
-        .statement th {
-            background-color: #4e73df;
-            color: white;
-        }
+.credit{
+color:green;
+font-weight:bold;
+}
 
-        tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
+.debit{
+color:red;
+font-weight:bold;
+}
 
-        tbody tr:hover {
-            background-color: #e2e6ea;
-        }
-    </style>
+</style>
 
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="../assets/img/logo.png" alt="Bank Logo" class="logo">
-            <h2>Sawongam Bank Ltd</h2>
-            <p>Putting fun
-                in funds
-                since 1969</p>
-        </div>
-        <h3>Bank Statement</h3>
-        <table class="statement">
-            <thead>
-                <tr>
-                    <th>Transaction Type</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Remarks</th>
-                    <th>Transaction Date</th>
-                    <th>Transaction Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($trns as $trn) {
-                    $date = $trn['Date'];
-                    $sender = $trn['Sender'];
-                    $receiver = $trn['Receiver'];
-                    $amount = $trn['Amount'];
-                    $remarks = $trn['Remarks'];
-                    $time = $trn['Time'];
-                    if ($trn['Sender'] == $accNo) {
-                        echo "<tr>
-                        <td>Debit</td>
-                        <td>Transfer to $receiver</td>
-                        <td>Rs. $amount</td>
-                        <td>$remarks</td>
-                        <td>$date</td>
-                        <td>$time</td>
-                        </tr>";
-                    } else {
-                        echo "<tr>
-                        <td>Credit</td>
-                        <td>Transfer from $receiver</td>
-                        <td>Rs. $amount</td>
-                        <td>$remarks</td>
-                        <td>$date</td>
-                        <td>$time</td>
-                        </tr>";
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-</body>
 
+<div class="container">
+
+<div class="header">
+
+<img src="../assets/img/logo.png" class="logo">
+
+<h2>Finova Bank Ltd</h2>
+
+<p>Smart Banking for Everyone</p>
+
+<h3>Bank Statement</h3>
+
+</div>
+
+<table class="statement">
+
+<thead>
+
+<tr>
+
+<th>Transaction Type</th>
+<th>Description</th>
+<th>Amount</th>
+<th>Remarks</th>
+<th>Date</th>
+<th>Time</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<?php
+
+foreach ($trns as $trn){
+
+$date = date("d-m-Y", strtotime($trn['DateTime']));
+$time = date("H:i:s", strtotime($trn['DateTime']));
+
+$sender = $trn['Sender'];
+$receiver = $trn['Receiver'];
+$amount = $trn['Amount'];
+$remarks = $trn['Remarks'];
+
+if($sender == $accNo){
+
+echo "<tr>
+<td class='debit'>Debit</td>
+<td>Transfer to $receiver</td>
+<td>Rs $amount</td>
+<td>$remarks</td>
+<td>$date</td>
+<td>$time</td>
+</tr>";
+
+}else{
+
+echo "<tr>
+<td class='credit'>Credit</td>
+<td>Transfer from $sender</td>
+<td>Rs $amount</td>
+<td>$remarks</td>
+<td>$date</td>
+<td>$time</td>
+</tr>";
+
+}
+
+}
+
+?>
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
 </html>
