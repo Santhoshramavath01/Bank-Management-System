@@ -6,16 +6,37 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require('../configs/db.php');
 
-$sender = $_SESSION['AccNo'];
+/* CHECK LOGIN */
+if (!isset($_SESSION['AccNo'])) {
+    header("Location: ../login.php?msg=Please login");
+    exit;
+}
 
-$upi = $_POST['upi_id'];
-$amount = $_POST['amount'];
-$remarks = $_POST['remarks'];
-$pin = $_POST['upi_pin'];
+$sender  = $_SESSION['AccNo'];
+$upi     = trim($_POST['upi_id']);
+$amount  = $_POST['amount'];
+$remarks = trim($_POST['remarks']);
+$pin     = $_POST['upi_pin'];
 
 $date = date("Y-m-d H:i:s");
 
-/* VERIFY UPI PIN */
+/* =========================
+   ✅ VALIDATE INPUT
+========================= */
+
+if (empty($upi) || empty($amount) || empty($pin)) {
+    header("Location: ../pages/dashboard/direct_pay.php?msg=All required fields must be filled");
+    exit;
+}
+
+if (!is_numeric($amount) || $amount <= 0) {
+    header("Location: ../pages/dashboard/direct_pay.php?msg=Invalid amount");
+    exit;
+}
+
+/* =========================
+   🔐 VERIFY UPI PIN
+========================= */
 
 $stmt = mysqli_prepare($conn, "SELECT upi_pin FROM userinfo WHERE AccNo=?");
 mysqli_stmt_bind_param($stmt, "i", $sender);
@@ -34,7 +55,9 @@ if ($res && mysqli_num_rows($res) > 0) {
     exit;
 }
 
-/* FIND RECEIVER USING UPI */
+/* =========================
+   👤 FIND RECEIVER
+========================= */
 
 $stmt = mysqli_prepare($conn, "SELECT AccNo FROM userinfo WHERE UPI=?");
 mysqli_stmt_bind_param($stmt, "s", $upi);
@@ -48,7 +71,15 @@ if (mysqli_num_rows($res2) == 0) {
 
 $receiver = mysqli_fetch_assoc($res2)['AccNo'];
 
-/* CHECK BALANCE (OPTIONAL, trigger will also check) */
+/* ❌ PREVENT SELF TRANSFER */
+if ($sender == $receiver) {
+    header("Location: ../pages/dashboard/direct_pay.php?msg=Cannot send money to yourself");
+    exit;
+}
+
+/* =========================
+   💰 CHECK BALANCE
+========================= */
 
 $stmt = mysqli_prepare($conn, "SELECT Balance FROM balance WHERE AccNo=?");
 mysqli_stmt_bind_param($stmt, "i", $sender);
@@ -61,7 +92,9 @@ if ($amount > $bal) {
     exit;
 }
 
-/* SAVE TRANSACTION (Trigger will handle everything) */
+/* =========================
+   💸 PROCESS TRANSACTION
+========================= */
 
 $txn = "TXN" . rand(100000, 999999);
 
@@ -79,12 +112,33 @@ mysqli_stmt_bind_param($stmt, "iiisss",
     $txn
 );
 
-if (!mysqli_stmt_execute($stmt)) {
-    header("Location: ../pages/dashboard/direct_pay.php?msg=Transaction failed");
+/* =========================
+   ⚠️ HANDLE DB ERRORS
+========================= */
+
+try {
+
+    mysqli_stmt_execute($stmt);
+
+} catch (mysqli_sql_exception $e) {
+
+    $error = $e->getMessage();
+
+    if (strpos($error, 'Invalid Amount') !== false) {
+        $msg = "Invalid amount entered";
+    } elseif (strpos($error, 'Insufficient Balance') !== false) {
+        $msg = "Insufficient balance";
+    } else {
+        $msg = "Transaction failed. Try again.";
+    }
+
+    header("Location: ../pages/dashboard/direct_pay.php?msg=" . urlencode($msg));
     exit;
 }
 
-/* REDIRECT */
+/* =========================
+   ✅ SUCCESS
+========================= */
 
 header("Location: ../pages/dashboard/transfer_success.php?txn=$txn");
 exit;
