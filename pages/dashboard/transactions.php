@@ -270,29 +270,44 @@ $receiver = $trn['Receiver'];
 $amount = $trn['Amount'];
 $remarks = $trn['Remarks'];
 
+/* CHECK IF BILL PAYMENT */
+
+$isBill = strpos($remarks, 'Bill Payment') !== false;
+
 if ($sender == $accNo){
 
-echo "<tr>
-<td>Debit</td>
-<td>Transfer to $receiver</td>
-<td>Rs. $amount</td>
-<td>$remarks</td>
-<td>$date</td>
-<td>$time</td>
-</tr>";
+$type = "Debit";
+
+/* DESCRIPTION FIX */
+if($isBill){
+    $description = $remarks; // Bill Payment - Mobile
+}else{
+    $description = "Transfer to $receiver";
+}
 
 }else{
 
+$type = "Credit";
+
+if($isBill){
+    $description = $remarks;
+}else{
+    $description = "Transfer from $sender";
+}
+
+}
+
+/* COLOR STYLE */
+$amountClass = ($type == "Debit") ? "style='color:red;font-weight:600'" : "style='color:green;font-weight:600'";
+
 echo "<tr>
-<td>Credit</td>
-<td>Transfer from $sender</td>
-<td>Rs. $amount</td>
+<td>$type</td>
+<td>$description</td>
+<td $amountClass>Rs. $amount</td>
 <td>$remarks</td>
 <td>$date</td>
 <td>$time</td>
 </tr>";
-
-}
 
 }
 

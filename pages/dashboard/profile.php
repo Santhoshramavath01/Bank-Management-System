@@ -287,6 +287,11 @@ style="background-image: url(<?php echo $pp ?>);">
 <?php echo $upi ?>
 </span>
 </p>
+<p class="form-label"><strong>IFSC Code:</strong> <br>
+<span class="upi-box">
+<?php echo $ifsc ?>
+</span>
+</p>
 
                             </div>
                         </div>

@@ -1,103 +1,290 @@
-
+-- Set SQL mode and timezone
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
 SET time_zone = "+00:00";
 
+-- Create and use database
+CREATE DATABASE IF NOT EXISTS bank_management;
+USE bank_management;
 
-CREATE TABLE `balance` (
-  `AccNo` int(11) NOT NULL,
-  `Balance` decimal(15,0) DEFAULT NULL,
-  `Interest` decimal(15,0) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Table: credentials (stores login details)
+CREATE TABLE credentials (
+  AccNo BIGINT PRIMARY KEY,
+  Pass VARCHAR(255) NOT NULL
+) ENGINE=InnoDB;
 
+-- Table: balance (stores account balance)
+CREATE TABLE balance (
+  AccNo BIGINT PRIMARY KEY,
+  Balance DECIMAL(15,0) DEFAULT 0,
+  Interest DECIMAL(15,0) DEFAULT 0,
+  FOREIGN KEY (AccNo) REFERENCES credentials(AccNo)
+) ENGINE=InnoDB;
 
-INSERT INTO `balance` (`AccNo`, `Balance`, `Interest`) VALUES
-(197, 35, 2),
-(198, 5, 0),
-(199, 45, 2),
-(200, 207, 12);
+-- Table: userinfo (stores user details)
+CREATE TABLE userinfo (
+  AccNo BIGINT PRIMARY KEY,
+  Name VARCHAR(50),
+  Address VARCHAR(100),
+  Email VARCHAR(64),
+  Mobile VARCHAR(10) UNIQUE,
+  UPI VARCHAR(50) UNIQUE,
+  upi_pin VARCHAR(255),
+  upi_pin_length INT,
+  FOREIGN KEY (AccNo) REFERENCES credentials(AccNo)
+) ENGINE=InnoDB;
 
-CREATE TABLE `credentials` (
-  `AccNo` int(11) NOT NULL,
-  `Pass` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Table: transactions (stores transaction history)
+CREATE TABLE transactions (
+  TxnID VARCHAR(50),
+  Sender BIGINT,
+  Receiver BIGINT,
+  Amount DECIMAL(10,0),
+  Remarks VARCHAR(50),
+  DateTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+  SenBalance DECIMAL(15,0),
+  RecBalance DECIMAL(15,0),
+  Status ENUM('SUCCESS','FAILED','PENDING') DEFAULT 'PENDING',
+  FOREIGN KEY (Sender) REFERENCES credentials(AccNo),
+  FOREIGN KEY (Receiver) REFERENCES credentials(AccNo)
+) ENGINE=InnoDB;
 
+-- Table: audit log (stores system logs)
+CREATE TABLE audit_log (
+  LogID INT AUTO_INCREMENT PRIMARY KEY,
+  Action VARCHAR(50),
+  Description TEXT,
+  CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO `credentials` (`AccNo`, `Pass`) VALUES
-(197, '$2y$10$7IIfksddC.juTraxmYGTceLp.81mwMB2e2NOBB9YZy.ii9oY1Li8W'),
-(198, '$2y$10$TJGtCn8Nd4ZHng8OY/K1LODLWd3SMnbXjIlzHo8vjPy5pGK6qocPO'),
-(199, '$2y$10$h6Eq4XrzBTudR7Vo2fZ/IemkyV8DgPPfe.CBv0UI1Bbm.kJOYfeYi'),
-(200, '$2y$10$dop1oPiHyey.V.86PakZCuDrZbgOCtOqRDOE8vT3.U4Of4RpeIqXS');
+-- Table: bill payments
+CREATE TABLE bill_payments (
+  BillID VARCHAR(50),
+  AccNo BIGINT,
+  BillType VARCHAR(50),
+  Provider VARCHAR(50),
+  ConsumerNo VARCHAR(50),
+  Amount DECIMAL(10,2),
+  Status ENUM('SUCCESS','FAILED') DEFAULT 'SUCCESS',
+  CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- Table: loans
+CREATE TABLE loans (
+    LoanID VARCHAR(50),
+    AccNo BIGINT,
+    LoanType VARCHAR(50),
+    Amount DECIMAL(10,2),
+    Tenure INT,
+    Income DECIMAL(10,2),
+    Status ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE `transactions` (
-  `Sender` int(11) NOT NULL,
-  `Receiver` int(11) NOT NULL,
-  `Amount` decimal(10,0) NOT NULL,
-  `Remarks` varchar(50) NOT NULL,
-  `DateTime` datetime NOT NULL DEFAULT current_timestamp(),
-  `SenBalance` decimal(10,0) NOT NULL,
-  `RecBalance` decimal(10,0) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Table: debit cards
+CREATE TABLE debit_cards (
+    CardID INT AUTO_INCREMENT PRIMARY KEY,
+    AccNo BIGINT,
+    CardNumber VARCHAR(16) UNIQUE,
+    CardHolder VARCHAR(100),
+    CardType VARCHAR(20),
+    Expiry DATE,
+    CVV INT,
+    PIN VARCHAR(255),
+    Status ENUM('ACTIVE','BLOCKED') DEFAULT 'ACTIVE',
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (AccNo) REFERENCES credentials(AccNo)
+);
 
-INSERT INTO `transactions` (`Sender`, `Receiver`, `Amount`, `Remarks`, `DateTime`, `SenBalance`, `RecBalance`) VALUES
-(200, 197, 10, 'Hired as Accountant', '2024-12-19 15:46:17', 59, 79),
-(200, 198, 10, 'Hired as Sales Manager', '2024-12-19 15:47:02', 49, 79),
-(200, 199, 30, 'Hired as Operation Manager', '2024-12-19 15:47:37', 19, 99),
-(200, 199, 19, 'Investment', '2024-12-19 15:48:40', 0, 118),
-(197, 200, 10, 'First Income', '2024-12-19 15:49:17', 69, 10),
-(198, 197, 40, 'ROI Again', '2024-12-19 15:50:00', 39, 109),
-(198, 197, 30, 'Miscellaneous Costs', '2024-12-19 15:50:22', 9, 139),
-(199, 197, 30, 'Sales Income', '2024-12-19 15:50:47', 88, 169),
-(199, 200, 20, 'Advetisers Payout', '2024-12-19 15:51:14', 68, 30),
-(197, 200, 100, 'Regular Income now', '2024-12-19 15:51:36', 69, 130),
-(197, 200, 50, 'More Sales', '2024-12-19 15:51:55', 19, 180),
-(199, 200, 30, 'Providers Funding', '2024-12-19 15:52:40', 38, 210),
-(200, 197, 10, 'Tax Cuts', '2024-12-19 15:54:24', 200, 29),
-(198, 197, 4, 'All remaining Bal', '2024-12-19 22:13:47', 5, 33),
-(200, 199, 5, 'Turn Over Profits', '2024-12-19 09:21:59', 207, 45);
+-- Add extra fields to debit_cards
+ALTER TABLE debit_cards 
+ADD DeliveryAddress TEXT,
+ADD Pincode VARCHAR(10),
+ADD City VARCHAR(50),
+ADD State VARCHAR(50);
 
+-- Table: credit cards
+CREATE TABLE credit_cards (
+    CardID INT AUTO_INCREMENT PRIMARY KEY,
+    AccNo BIGINT,
+    CardNumber VARCHAR(16) UNIQUE,
+    CardHolder VARCHAR(100),
+    CardType VARCHAR(20),
+    CreditLimit DECIMAL(10,2),
+    UsedLimit DECIMAL(10,2) DEFAULT 0,
+    Expiry DATE,
+    CVV INT,
+    Status ENUM('ACTIVE','BLOCKED') DEFAULT 'ACTIVE',
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (AccNo) REFERENCES credentials(AccNo)
+);
 
+-- Table: card transactions
+CREATE TABLE card_transactions (
+    TxnID VARCHAR(50),
+    CardNumber VARCHAR(16),
+    Amount DECIMAL(10,2),
+    Type ENUM('DEBIT','CREDIT'),
+    Description VARCHAR(100),
+    DateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE `userinfo` (
-  `AccNo` int(11) NOT NULL,
-  `Name` varchar(50) DEFAULT NULL,
-  `Address` varchar(100) DEFAULT NULL,
-  `Email` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Table: card limits
+CREATE TABLE card_limits (
+    AccNo BIGINT,
+    online_limit INT,
+    atm_limit INT,
+    pos_limit INT,
+    status BOOLEAN DEFAULT TRUE
+);
 
-INSERT INTO `userinfo` (`AccNo`, `Name`, `Address`, `Email`) VALUES
-(197, 'Ram Bahadur', 'Syanjga', 'ram@bahadur.com'),
-(198, 'Jaja Bahadur', 'Jhapa', 'haha@bahadur.com'),
-(199, 'Dam Bahadur', 'Dhanghadi', 'dam@bahadur.com'),
-(200, 'Sangam Adhikari', 'Pokhara', 'sangam@adhikari.com');
+-- Table: card settings
+CREATE TABLE card_settings (
+    AccNo BIGINT PRIMARY KEY,
+    online_enabled TINYINT DEFAULT 1,
+    atm_enabled TINYINT DEFAULT 1,
+    pos_enabled TINYINT DEFAULT 1,
+    online_limit INT DEFAULT 200000,
+    atm_limit INT DEFAULT 75000,
+    pos_limit INT DEFAULT 200000
+);
 
-ALTER TABLE `balance`
-  ADD PRIMARY KEY (`AccNo`);
-
-ALTER TABLE `credentials`
-  ADD PRIMARY KEY (`AccNo`);
-
-ALTER TABLE `userinfo`
-  ADD PRIMARY KEY (`AccNo`);
-
-ALTER TABLE `credentials`
-  MODIFY `AccNo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=204;
-
-ALTER TABLE `balance`
-  ADD CONSTRAINT `balance_ibfk_1` FOREIGN KEY (`AccNo`) REFERENCES `credentials` (`AccNo`);
-
-ALTER TABLE `userinfo`
-  ADD CONSTRAINT `userinfo_ibfk_1` FOREIGN KEY (`AccNo`) REFERENCES `credentials` (`AccNo`);
-COMMIT;
-
+-- Add IFSC column
 ALTER TABLE userinfo
-ADD Mobile VARCHAR(10) UNIQUE,
-ADD UPI VARCHAR(50) UNIQUE;
+ADD COLUMN IFSC VARCHAR(11);
 
-UPDATE userinfo
-SET UPI = CONCAT(Mobile,'@finova')
-WHERE UPI IS NULL AND Mobile IS NOT NULL;
+-- Add constraints
+ALTER TABLE balance
+ADD CONSTRAINT chk_balance_non_negative CHECK (Balance >= 0);
 
 ALTER TABLE transactions
-ADD TxnID VARCHAR(50);
+ADD CONSTRAINT chk_amount_positive CHECK (Amount > 0);
+
+-- Insert sample credentials
+INSERT INTO credentials (AccNo, Pass) VALUES
+(240012000001, SHA2('ram123',256)),
+(240012000002, SHA2('jaja123',256)),
+(240012000003, SHA2('dam123',256)),
+(240012000004, SHA2('sangam123',256));
+
+-- Insert sample balances
+INSERT INTO balance (AccNo, Balance, Interest) VALUES
+(240012000001, 1000, 0),
+(240012000002, 500, 0),
+(240012000003, 800, 0),
+(240012000004, 1200, 0);
+
+-- Insert sample users
+INSERT INTO userinfo (AccNo, Name, Address, Email, Mobile, UPI) VALUES
+(240012000001, 'Ram Bahadur', 'Syanjga', 'ram@bahadur.com', '9999999991', '9999999991@finova'),
+(240012000002, 'Jaja Bahadur', 'Jhapa', 'haha@bahadur.com', '9999999992', '9999999992@finova'),
+(240012000003, 'Dam Bahadur', 'Dhanghadi', 'dam@bahadur.com', '9999999993', '9999999993@finova'),
+(240012000004, 'Sangam Adhikari', 'Pokhara', 'sangam@adhikari.com', '9999999994', '9999999994@finova');
+
+-- Triggers
+DELIMITER $$
+
+CREATE TRIGGER trg_generate_txnid
+BEFORE INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    IF NEW.TxnID IS NULL OR NEW.TxnID = '' THEN
+        SET NEW.TxnID = CONCAT('TXN', DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'), FLOOR(RAND()*1000));
+    END IF;
+END$$
+
+CREATE TRIGGER trg_validate_transaction
+BEFORE INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    DECLARE sender_balance DECIMAL(15,0);
+
+    SELECT Balance INTO sender_balance
+    FROM balance
+    WHERE AccNo = NEW.Sender;
+
+    IF NEW.Amount <= 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid Amount';
+    END IF;
+
+    IF sender_balance < NEW.Amount THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient Balance';
+    END IF;
+END$$
+
+CREATE TRIGGER trg_transaction_full
+BEFORE INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    DECLARE senderBal DECIMAL(15,0);
+    DECLARE receiverBal DECIMAL(15,0);
+
+    SELECT Balance INTO senderBal FROM balance WHERE AccNo = NEW.Sender;
+    SELECT Balance INTO receiverBal FROM balance WHERE AccNo = NEW.Receiver;
+
+    UPDATE balance SET Balance = senderBal - NEW.Amount WHERE AccNo = NEW.Sender;
+    UPDATE balance SET Balance = receiverBal + NEW.Amount WHERE AccNo = NEW.Receiver;
+
+    SET NEW.SenBalance = senderBal - NEW.Amount;
+    SET NEW.RecBalance = receiverBal + NEW.Amount;
+    SET NEW.Status = 'SUCCESS';
+END$$
+
+CREATE TRIGGER trg_audit_transaction
+AFTER INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log (Action, Description)
+    VALUES (
+        'TRANSFER',
+        CONCAT('TXN ', NEW.TxnID, ' ', NEW.Amount, ' FROM ', NEW.Sender, ' TO ', NEW.Receiver)
+    );
+END$$
+
+CREATE TRIGGER trg_prevent_delete
+BEFORE DELETE ON transactions
+FOR EACH ROW
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Delete not allowed';
+END$$
+
+DELIMITER ;
+
+-- Stored Procedure for money transfer
+DELIMITER $$
+
+CREATE PROCEDURE TransferMoney(
+    IN p_sender BIGINT,
+    IN p_receiver BIGINT,
+    IN p_amount DECIMAL(10,0),
+    IN p_remarks VARCHAR(50)
+)
+BEGIN
+    DECLARE sender_balance DECIMAL(15,0);
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+
+    SELECT Balance INTO sender_balance
+    FROM balance
+    WHERE AccNo = p_sender
+    FOR UPDATE;
+
+    IF sender_balance < p_amount THEN
+        ROLLBACK;
+    ELSE
+        INSERT INTO transactions (Sender, Receiver, Amount, Remarks)
+        VALUES (p_sender, p_receiver, p_amount, p_remarks);
+
+        COMMIT;
+    END IF;
+
+END$$
+
+DELIMITER ;
+
+COMMIT;

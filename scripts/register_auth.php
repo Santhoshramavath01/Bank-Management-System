@@ -14,18 +14,47 @@ $mobile   = $_POST['mobile'];
 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
 /* -----------------------------
+   Generate IFSC
+--------------------------------*/
+
+function generateIFSC() {
+    $bank = "FINO";
+    $branch = "0012"; // same branch code
+
+    return $bank . "0" . $branch;
+}
+
+/* -----------------------------
+   Generate 12-digit Account Number
+--------------------------------*/
+
+function generateAccountNumber($conn) {
+    $year = date("y");      // e.g., 24
+    $branch = "0012";       // branch code
+
+    do {
+        $random = rand(100000, 999999);
+        $accNo = $year . $branch . $random;
+
+        $check = mysqli_query($conn, "SELECT AccNo FROM credentials WHERE AccNo='$accNo'");
+    } while (mysqli_num_rows($check) > 0);
+
+    return $accNo;
+}
+
+$accNo = generateAccountNumber($conn);
+$ifsc  = generateIFSC();   // ✅ IMPORTANT (you missed this)
+
+/* -----------------------------
    Check Duplicate Email
 --------------------------------*/
 
-$sql_dupCheck = "SELECT * FROM userinfo WHERE Email = '$email'";
-$result_dupCheck = mysqli_query($conn, $sql_dupCheck);
+$stmt = mysqli_prepare($conn, "SELECT AccNo FROM userinfo WHERE Email = ?");
+mysqli_stmt_bind_param($stmt, "s", $email);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-if (!$result_dupCheck) {
-    header('Location: ../pages/register.php?msg=Database error');
-    exit;
-}
-
-if (mysqli_num_rows($result_dupCheck) != 0) {
+if (mysqli_num_rows($result) > 0) {
     header('Location: ../pages/register.php?msg=Email already registered');
     exit;
 }
@@ -34,10 +63,12 @@ if (mysqli_num_rows($result_dupCheck) != 0) {
    Check Duplicate Mobile
 --------------------------------*/
 
-$sql_mobileCheck = "SELECT * FROM userinfo WHERE Mobile = '$mobile'";
-$result_mobileCheck = mysqli_query($conn, $sql_mobileCheck);
+$stmt = mysqli_prepare($conn, "SELECT AccNo FROM userinfo WHERE Mobile = ?");
+mysqli_stmt_bind_param($stmt, "s", $mobile);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-if (mysqli_num_rows($result_mobileCheck) != 0) {
+if (mysqli_num_rows($result) > 0) {
     header('Location: ../pages/register.php?msg=Mobile already registered');
     exit;
 }
@@ -49,49 +80,34 @@ if (mysqli_num_rows($result_mobileCheck) != 0) {
 $upi_id = $mobile . "@finova";
 
 /* -----------------------------
-   Generate Account Number
+   Insert into credentials
 --------------------------------*/
 
-$sql_genCreds = "INSERT INTO credentials (AccNo, Pass) VALUES (NULL, '$password')";
-$result_genCreds = mysqli_query($conn, $sql_genCreds);
-
-if (!$result_genCreds) {
-    header('Location: ../pages/register.php?msg=Account creation failed');
-    exit;
-}
-
-/* -----------------------------
-   Get Generated Account Number
---------------------------------*/
-
-$sql_getAccNo = "SELECT AccNo FROM credentials ORDER BY AccNo DESC LIMIT 1";
-$result_getAccNo = mysqli_query($conn, $sql_getAccNo);
-$accNo = mysqli_fetch_assoc($result_getAccNo)['AccNo'];
+$stmt = mysqli_prepare($conn, "INSERT INTO credentials (AccNo, Pass) VALUES (?, ?)");
+mysqli_stmt_bind_param($stmt, "is", $accNo, $password);
+mysqli_stmt_execute($stmt);
 
 /* -----------------------------
    Create Balance
 --------------------------------*/
 
-$sql_genBal = "INSERT INTO balance (AccNo, Balance) VALUES ('$accNo', '0')";
-mysqli_query($conn, $sql_genBal);
+$stmt = mysqli_prepare($conn, "INSERT INTO balance (AccNo, Balance, Interest) VALUES (?, 0, 0)");
+mysqli_stmt_bind_param($stmt, "i", $accNo);
+mysqli_stmt_execute($stmt);
 
 /* -----------------------------
-   Save User Information
+   Save User Info (FIXED)
 --------------------------------*/
 
-$sql_saveUserInfo = "
-INSERT INTO userinfo 
-(AccNo, Name, Address, Email, Mobile, UPI)
-VALUES 
-('$accNo', '$fullname', '$address', '$email', '$mobile', '$upi_id')
-";
+$stmt = mysqli_prepare($conn, 
+"INSERT INTO userinfo (AccNo, Name, Address, Email, Mobile, UPI, IFSC) 
+VALUES (?, ?, ?, ?, ?, ?, ?)");
 
-$result_saveUserInfo = mysqli_query($conn, $sql_saveUserInfo);
+mysqli_stmt_bind_param($stmt, "issssss",
+    $accNo, $fullname, $address, $email, $mobile, $upi_id, $ifsc
+);
 
-if (!$result_saveUserInfo) {
-    header('Location: ../pages/register.php?msg=User creation failed');
-    exit;
-}
+mysqli_stmt_execute($stmt);
 
 /* -----------------------------
    Start Session
@@ -101,7 +117,7 @@ session_start();
 $_SESSION['AccNo'] = $accNo;
 
 /* -----------------------------
-   Redirect to Dashboard
+   Redirect
 --------------------------------*/
 
 header('Location: ../pages/dashboard/index.php');

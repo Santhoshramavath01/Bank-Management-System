@@ -241,72 +241,116 @@ style="background-image: url(<?php echo $pp ?>);">
                             </div>
                             <!--body of transfer chart-->
                             <div class="user-setting-body project-body">
-<form action="../../scripts/bal_transfer.php" method="POST" class="transfer-form">
+ <form action="../../scripts/bal_transfer.php" method="POST" class="transfer-form">
 
 <!-- Receiver Account Number -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>Receiver Account Number</strong></label>
-<input class="form-control-prof" type="text" name="receiver_accNo" required>
+
+<input 
+class="form-control-prof" 
+type="text" 
+name="receiver_accNo" 
+id="receiver_accNo" 
+onblur="getReceiverName()" 
+required>
+
+<p id="receiverName" style="margin-top:5px;font-weight:600;"></p>
+
 </div>
 </div>
 
 <!-- Receiver Bank Name -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>Receiver Bank Name</strong></label>
-<input class="form-control-prof" 
+
+<input  
+class="form-control-prof"
 type="text" 
-name="receiver_accNo"
-id="receiver_accNo"
-onkeyup="getReceiverName()"
+name="receiver_bank"
 required>
 
-<p id="receiverName" style="color:green;font-weight:600;margin-top:5px;"></p></div>
+</div>
 </div>
 
 <!-- IFSC Code -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>IFSC Code</strong></label>
-<input class="form-control-prof" type="text" name="ifsc" placeholder="Example: SBIN0001234" required>
+
+<input 
+class="form-control-prof" 
+type="text" 
+name="ifsc" 
+placeholder="Example: FINO00012" 
+required>
+
 </div>
 </div>
 
 <!-- Amount -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>Amount</strong></label>
-<input class="form-control-prof" type="number" name="amount" required>
+
+<input 
+class="form-control-prof" 
+type="number" 
+name="amount" 
+required>
+
 </div>
 </div>
 
 <!-- Remarks -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>Remarks / Notes</strong></label>
-<input class="form-control-prof" type="text" name="remarks" placeholder="Optional note">
+
+<input 
+class="form-control-prof" 
+type="text" 
+name="remarks" 
+placeholder="Optional note">
+
 </div>
 </div>
 
 <!-- UPI PIN -->
 <div class="form-row d-flex justify-between">
 <div class="form-row-col d-flex flex-direction-column">
+
 <label class="form-label"><strong>Enter UPI PIN</strong></label>
-<input class="form-control-prof" type="password" name="upi_pin" maxlength="6" required>
+
+<input 
+class="form-control-prof" 
+type="password" 
+name="upi_pin" 
+required>
+
 </div>
 </div>
 
-<small id="error-code" class="error-font">
+<!-- Error Message -->
+<small id="error-code" class="error-font" style="color:red;">
 <?php echo $error ?>
 </small>
 
 <!-- Transfer Button -->
 <div class="form-row">
 <div class="form-row-button text-center">
+
 <button class="button-profile transfer-btn" name="submit" type="submit">
 <i class="fas fa-paper-plane"></i> Transfer Money
 </button>
+
 </div>
 </div>
 
@@ -326,11 +370,7 @@ function toggleProfileMenu() {
 
 var menu = document.getElementById("profileMenu");
 
-if(menu.style.display === "block"){
-menu.style.display = "none";
-}else{
-menu.style.display = "block";
-}
+menu.style.display = (menu.style.display === "block") ? "none" : "block";
 
 }
 
@@ -348,11 +388,16 @@ menu.style.display = "none";
 
 }
 
+/* -----------------------------
+   FIXED RECEIVER FUNCTION
+--------------------------------*/
+
 function getReceiverName(){
 
 var accNo = document.getElementById("receiver_accNo").value;
 
-if(accNo.length < 1){
+/* Only run for full 12 digits */
+if(accNo.length != 12){
 document.getElementById("receiverName").innerHTML="";
 return;
 }
@@ -363,9 +408,9 @@ xhr.open("POST","../../scripts/get_receiver.php",true);
 
 xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 
-xhr.onload=function(){
+xhr.onload = function(){
 
-if(this.responseText=="notfound"){
+if(this.responseText.trim() == "notfound"){
 
 document.getElementById("receiverName").innerHTML =
 "<span style='color:red'>Receiver not found</span>";
@@ -373,23 +418,21 @@ document.getElementById("receiverName").innerHTML =
 }else{
 
 document.getElementById("receiverName").innerHTML =
-"Receiver: "+this.responseText;
+"<span style='color:green'>Receiver: " + this.responseText + "</span>";
 
 }
 
 };
 
-xhr.send("accNo="+accNo);
+xhr.send("accNo=" + accNo);
 
 }
 
 function logoutUser(){
 
-    if(confirm("Are you sure you want to logout?")){
-
-        window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
-
-    }
+if(confirm("Are you sure you want to logout?")){
+window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
+}
 
 }
 

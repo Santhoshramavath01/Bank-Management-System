@@ -9,7 +9,6 @@
 
 A Web-based banking  system, providing account login, creation, balance inquiry, fund transfers, analytics, and more.
 
-// updated
 
 ## Features
 

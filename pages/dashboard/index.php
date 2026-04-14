@@ -291,13 +291,21 @@ margin-top:5px;
 }
 
 .suggestion-item{
-padding:6px;
+padding:8px;
 cursor:pointer;
-border-radius:4px;
+border-radius:6px;
+font-size:14px;
 }
 
 .suggestion-item:hover{
-background:#f1f1f1;
+background:#eef2ff;
+color:#4e73df;
+font-weight:600;
+}
+
+#suggestions{
+max-height:200px;
+overflow-y:auto;
 }
 </style>
 </head>
@@ -449,41 +457,39 @@ style="background-image: url(<?php echo $pp ?>);">
 
 <div class="service-grid">
 
-<a href="education_loan.php" class="service-card">
-<i class="fas fa-graduation-cap"></i>
-<p>Education Loan</p>
+<a href="loans.php" class="service-card">
+<i class="fas fa-hand-holding-usd"></i>
+<p>Apply Loan</p>
 </a>
 
-<a href="home_loan.php" class="service-card">
-<i class="fas fa-home"></i>
-<p>Home Loan</p>
-</a>
-
-<a href="gold_loan.php" class="service-card">
-<i class="fas fa-coins"></i>
-<p>Gold Loan</p>
-</a>
-
-<a href="agriculture_loan.php" class="service-card">
-<i class="fas fa-seedling"></i>
-<p>Agriculture Loan</p>
-</a>
-
-<a href="car_loan.php" class="service-card">
-<i class="fas fa-car"></i>
-<p>Car Loan</p>
+<a href="loan_status.php" class="service-card">
+<i class="fas fa-tasks"></i>
+<p>Loan Status</p>
 </a>
 
 <a href="loan_calculator.php" class="service-card">
 <i class="fas fa-calculator"></i>
-<p>Loan Calculator</p>
+<p>EMI Calculator</p>
+</a>
+
+<a href="loan_offers.php" class="service-card">
+<i class="fas fa-gift"></i>
+<p>Loan Offers</p>
+</a>
+
+<a href="loan_history.php" class="service-card">
+<i class="fas fa-history"></i>
+<p>Loan History</p>
+</a>
+
+<a href="loan_help.php" class="service-card">
+<i class="fas fa-question-circle"></i>
+<p>Help & Support</p>
 </a>
 
 </div>
 
 </div>
-
-
 <!-- Cards Section -->
 
 <div class="service-section">
@@ -519,49 +525,50 @@ style="background-image: url(<?php echo $pp ?>);">
 </div>
 <script>
 
+/* ================= PROFILE MENU ================= */
 function toggleProfileMenu() {
-
-var menu = document.getElementById("profileMenu");
-
-if(menu.style.display === "block"){
-menu.style.display = "none";
-}else{
-menu.style.display = "block";
+let menu = document.getElementById("profileMenu");
+menu.style.display = (menu.style.display === "block") ? "none" : "block";
 }
 
-}
-
+/* ================= GLOBAL CLICK ================= */
 window.onclick = function(event) {
 
-if(!event.target.closest('.profile-dropdown')){
-
-var menu = document.getElementById("profileMenu");
-
-if(menu){
-menu.style.display = "none";
-}
-
-}
-
-}
-
-document.getElementById("sidebarToggle").addEventListener("click",function(){
-
-document.getElementById("wrapper").classList.toggle("toggled");
-
-});
-function logoutUser(){
-
-    if(confirm("Are you sure you want to logout?")){
-
-        window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
-
+    /* PROFILE CLOSE */
+    if(!event.target.closest('.profile-dropdown')){
+        let menu = document.getElementById("profileMenu");
+        if(menu) menu.style.display = "none";
     }
 
+    /* SEARCH CLOSE */
+    if(!event.target.closest('.search-container')){
+        let searchBox = document.getElementById("searchBox");
+        if(searchBox){
+            searchBox.style.display = "none";
+            document.getElementById("suggestions").innerHTML = "";
+        }
+    }
 }
 
+/* ================= SIDEBAR ================= */
+let toggleBtn = document.getElementById("sidebarToggle");
+if(toggleBtn){
+toggleBtn.addEventListener("click",function(){
+document.getElementById("wrapper").classList.toggle("toggled");
+});
+}
+
+/* ================= LOGOUT ================= */
+function logoutUser(){
+if(confirm("Are you sure you want to logout?")){
+window.location.href = "/Bank-Management-System-in-Web/pages/home.php";
+}
+}
+
+/* ================= SEARCH TOGGLE ================= */
 function toggleSearch(e){
 e.preventDefault();
+e.stopPropagation();
 
 let box = document.getElementById("searchBox");
 
@@ -573,44 +580,51 @@ document.getElementById("searchInput").focus();
 }
 }
 
+/* ================= SERVICES LIST ================= */
 const services = [
 {name:"Send Money", link:"transfer.php"},
 {name:"Direct Pay", link:"direct_pay.php"},
 {name:"Bill Pay", link:"bill_pay.php"},
 {name:"Check Balance", link:"check_balance.php"},
 {name:"Transactions", link:"transactions.php"},
-{name:"Education Loan", link:"education_loan.php"},
-{name:"Home Loan", link:"home_loan.php"},
-{name:"Gold Loan", link:"gold_loan.php"},
-{name:"Agriculture Loan", link:"agriculture_loan.php"},
-{name:"Car Loan", link:"car_loan.php"},
-{name:"Loan Calculator", link:"loan_calculator.php"},
+{name:"Apply Loan", link:"loans.php"},
+{name:"Loan Status", link:"loan_status.php"},
+{name:"EMI Calculator", link:"loan_calculator.php"},
+{name:"Loan Offers", link:"loan_offers.php"},
 {name:"Manage Debit Card", link:"manage_debit.php"},
 {name:"Manage Credit Card", link:"manage_credit.php"},
 {name:"Apply Debit Card", link:"apply_debit.php"},
+{name:"Setting", link:"settings.php"},
+{name:"profile", link:"profile.php"},
+{name:"Dark Mode", link:"settings.php"},
+{name:"Change password", link:"change_password.php"},
 {name:"Apply Credit Card", link:"apply_credit.php"}
 ];
 
+/* ================= LIVE SEARCH ================= */
 function showSuggestions(){
 
-let input = document.getElementById("searchInput").value.toLowerCase();
+let input = document.getElementById("searchInput").value.toLowerCase().trim();
 let suggestions = document.getElementById("suggestions");
 
-suggestions.innerHTML="";
+suggestions.innerHTML = "";
 
-if(input === ""){
-return;
-}
+if(input === "") return;
 
 services.forEach(function(service){
 
 if(service.name.toLowerCase().includes(input)){
 
 let div = document.createElement("div");
-div.className="suggestion-item";
-div.innerText = service.name;
+div.className = "suggestion-item";
 
-div.onclick=function(){
+/* 🔥 Highlight text */
+let regex = new RegExp(`(${input})`, "gi");
+div.innerHTML = service.name.replace(regex, "<b>$1</b>");
+
+/* CLICK NAVIGATION */
+div.onclick = function(){
+document.getElementById("searchBox").style.display = "none";
 window.location.href = service.link;
 };
 
@@ -621,6 +635,25 @@ suggestions.appendChild(div);
 });
 
 }
+
+/* ================= ENTER KEY NAVIGATION ================= */
+document.getElementById("searchInput").addEventListener("keydown", function(e){
+
+if(e.key === "Enter"){
+
+let input = this.value.toLowerCase();
+
+for(let i=0;i<services.length;i++){
+if(services[i].name.toLowerCase().includes(input)){
+window.location.href = services[i].link;
+break;
+}
+}
+
+}
+
+});
+
 </script>
 </body>
 </html>

@@ -332,11 +332,6 @@ style="background-image: url(<?php echo $pp ?>);">
 <p>Update Mobile Number</p>
 </a>
 
-<a href="debit_card.php" class="settings-card">
-<i class="fas fa-credit-card"></i>
-<p>Manage Debit Card</p>
-</a>
-
 <a href="#" onclick="toggleDarkMode()" class="settings-card">
 <i class="fas fa-moon"></i>
 <p>Dark Mode</p>

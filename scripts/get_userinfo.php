@@ -1,30 +1,49 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require(__DIR__ . '/../configs/db.php');
+
 $accNo = $_SESSION['AccNo'];
 
-$sql = "SELECT * FROM userinfo WHERE AccNo='$accNo'";
-$result = mysqli_query($conn,$sql);
+/* -----------------------------
+   Fetch User Info (SAFE)
+--------------------------------*/
 
-$row = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($conn, 
+"SELECT Name, Address, Email, Mobile, UPI, IFSC 
+FROM userinfo 
+WHERE AccNo = ?");
 
-if($row){
+mysqli_stmt_bind_param($stmt, "i", $accNo);
+mysqli_stmt_execute($stmt);
 
-$name = $row['Name'];
-$address = $row['Address'];
-$email = $row['Email'];
-$mobile = $row['Mobile'];
-$upi = $row['UPI'];
+$result = mysqli_stmt_get_result($stmt);
 
-$fName = explode(" ", $name)[0]; // first name
+if ($result && mysqli_num_rows($result) > 0) {
 
-}else{
+    $row = mysqli_fetch_assoc($result);
 
-$name = "";
-$address = "";
-$email = "";
-$mobile = "";
-$upi = "";
-$fName = "";
+    $name    = $row['Name'] ?? "";
+    $address = $row['Address'] ?? "";
+    $email   = $row['Email'] ?? "";
+    $mobile  = $row['Mobile'] ?? "";
+    $upi     = $row['UPI'] ?? "";
+    $ifsc    = $row['IFSC'] ?? "";   // ✅ ADDED
+
+    $fName = explode(" ", $name)[0];
+
+} else {
+
+    $name = "";
+    $address = "";
+    $email = "";
+    $mobile = "";
+    $upi = "";
+    $ifsc = "";   // ✅ ADDED
+    $fName = "";
 
 }
 
