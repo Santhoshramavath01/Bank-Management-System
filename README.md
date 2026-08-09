@@ -679,37 +679,39 @@ screenshots/
 └── loans.png
 ```
 
-### Login
-
-![Login Page](screenshots/login.png)
-
 ### Registration
 
-![Registration Page](screenshots/register.png)
+![Registration Page](<img width="1600" height="720" alt="Registration_page" src="https://github.com/user-attachments/assets/d6a42335-c855-4cd0-8f0b-61a051dbe041" />
+)
 
 ### Dashboard
 
-![Dashboard](screenshots/dashboard.png)
-
-### Analytics
-
-![Analytics](screenshots/analytics.png)
+![Dashboard](<img width="1600" height="720" alt="Dashboard_page" src="https://github.com/user-attachments/assets/0b00c715-9f1e-44b4-b2ca-dfa0af9e37e6" />
+)
 
 ### Fund Transfer
 
-![Fund Transfer](screenshots/transfer.png)
-
+![Fund Transfer](<img width="1600" height="720" alt="Transfer_page" src="https://github.com/user-attachments/assets/9a068dc1-13b8-41ee-8da2-da6d4ab74dbc" />
+)
+### Direct pay
+![Send Money](<img width="2400" height="1080" alt="Direct_pay _page" src="https://github.com/user-attachments/assets/57304736-c0d3-4815-b023-080028428f67" />
+)
 ### Transactions
 
-![Transactions](screenshots/transactions.png)
-
+![Transactions](<img width="1600" height="720" alt="Transactions_page" src="https://github.com/user-attachments/assets/08caa4b7-4357-4855-82fd-aca45f3d07ce" />
+)
+###Bank Statement
+![Bank Statement](<img width="1600" height="720" alt="Bankstatement_page" src="https://github.com/user-attachments/assets/4e19c12f-fed7-4479-83da-5a364b20d8f0" />
+)
 ### Card Management
 
-![Card Management](screenshots/cards.png)
+![Card Management](<img width="2400" height="1080" alt="Manage_cards_page" src="https://github.com/user-attachments/assets/25fc2f1a-3a9b-497e-bd75-cb1870d30f4b" />
+)
 
 ### Loan Management
 
-![Loan Management](screenshots/loans.png)
+![Loan Management](<img width="1600" height="720" alt="Loanssections_page" src="https://github.com/user-attachments/assets/e0a20df3-d91d-48ca-af84-e2aa11711f71" />
+)
 
 ---
 
